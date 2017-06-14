@@ -1,5 +1,7 @@
 package com.github.slyatbest.cukes_framework.steps;
 
+import org.junit.Assert;
+
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -21,6 +23,6 @@ public class TestFeatureSteps
     @Then("^something useful happens$")
     public void somethingUsefulHappens() throws Throwable
     {
-        //Do nothing
+        Assert.fail("Something went wrong!");
     }
 }
