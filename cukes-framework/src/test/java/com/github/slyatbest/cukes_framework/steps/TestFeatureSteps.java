@@ -11,18 +11,19 @@ public class TestFeatureSteps
     @Given("^I have a product$")
     public void iHaveAProduct() throws Throwable
     {
-        //Do nothing
+        Thread.sleep(1000);
     }
 
     @When("^I ask it to do something$")
     public void iAskItToDoSomething() throws Throwable
     {
-        //Do nothing
+        Thread.sleep(2000);
     }
 
     @Then("^something useful happens$")
     public void somethingUsefulHappens() throws Throwable
     {
+        Thread.sleep(1000);
         Assert.assertTrue("Something happened", true);
     }
 }
