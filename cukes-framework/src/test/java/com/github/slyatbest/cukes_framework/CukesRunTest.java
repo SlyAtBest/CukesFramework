@@ -7,7 +7,9 @@ import cucumber.api.SnippetType;
 import cucumber.api.junit.Cucumber;
 
 @RunWith(Cucumber.class)
-@CucumberOptions(features = "src/test/resources", tags = {"~@ignore"}, plugin = {"pretty"},
+@CucumberOptions(features = "src/test/resources", tags = {"~@ignore"},
+        plugin = {"pretty",
+                "com.github.slyatbest.cukes_framework.elasticsearch.ElasticFormatter:target/elastic-output.json"},
         snippets = SnippetType.CAMELCASE, strict = true)
 public class CukesRunTest
 {

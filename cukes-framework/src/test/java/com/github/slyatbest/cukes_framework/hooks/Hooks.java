@@ -7,9 +7,16 @@ import com.google.common.io.Resources;
 
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
+import cucumber.api.java.Before;
 
 public class Hooks
 {
+    @Before()
+    public void printStartingTest()
+    {
+        System.out.println("***Starting Test***");
+    }
+
     @After()
     public void embedImage(Scenario scenario)
     {
