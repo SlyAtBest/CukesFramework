@@ -78,17 +78,16 @@ public class ElasticFormatter implements Reporter, Formatter
 
     public void step(Step step)
     {
+        // When handling the first example value of a scenario outline the steps are always duplicated, but not with any subsequent example values.
+        // The duplicate steps are always stored before any other steps including hooks or background steps.  Thus they stored at the top of the list so can be safely popped
+        // off of the list as the duplicates we wish to keep come in.  We can tell detect the duplicates we wish to keep because they have a class type of ExampleStep and a matching
+        // line number
+
         // Check if the step is an example step (can't use instanceof because it's private)
-        // if it is scan the steps list and remove the duplicate step
-        if (step.getClass().toString().equals("class cucumber.runtime.model.ExampleStep"))
+        if (step.getClass().toString().equals("class cucumber.runtime.model.ExampleStep") && (steps.size() > 0)
+                && (steps.get(0).getLine() == step.getLine()))
         {
-            for (int i = 0; i < steps.size(); i++)
-            {
-                if (steps.get(i).getLine() == step.getLine())
-                {
-                    steps.remove(i);
-                }
-            }
+            steps.remove(0);
         }
 
         steps.add(step);
@@ -108,8 +107,8 @@ public class ElasticFormatter implements Reporter, Formatter
         for (int i = 0; i < steps.size(); i++)
         {
             elasticStepResult = new ElasticStepResult(steps.get(i), results.get(i), matches.get(i), feature, scenario);
-            out.append(gson().toJson(new ElasticOperation("results", "result"))).append("\n");
-            out.append(gson().toJson(elasticStepResult)).append("\n");
+            out.append(getGson().toJson(new ElasticOperation("results", "result"))).append("\n");
+            out.append(getGson().toJson(elasticStepResult)).append("\n");
         }
 
         // Reset lists and values
@@ -169,7 +168,7 @@ public class ElasticFormatter implements Reporter, Formatter
         // Noop
     }
 
-    protected Gson gson()
+    private Gson getGson()
     {
         return new GsonBuilder().create();
     }
