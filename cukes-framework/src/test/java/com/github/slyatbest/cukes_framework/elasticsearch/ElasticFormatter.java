@@ -1,7 +1,12 @@
 package com.github.slyatbest.cukes_framework.elasticsearch;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import gherkin.deps.com.google.gson.Gson;
 import gherkin.deps.com.google.gson.GsonBuilder;
@@ -23,6 +28,9 @@ public class ElasticFormatter implements Reporter, Formatter
     private static final int STARTING_AFTER_HOOK_VALUE = 10000;
 
     private final NiceAppendable out;
+    private final String branch;
+    private final String product;
+
     private ElasticStepResult elasticStepResult;
     private List<Step> steps = new ArrayList<Step>();
     private List<Result> results = new ArrayList<Result>();
@@ -34,48 +42,85 @@ public class ElasticFormatter implements Reporter, Formatter
     public ElasticFormatter(Appendable out)
     {
         this.out = new NiceAppendable(out);
+        Properties properties = getBuildProperties();
+        this.branch = properties.getProperty("branch");
+        this.product = properties.getProperty("product");
     }
 
+    /**
+     * Method to retrieve the build.properties data.  If no file is found then default the data.
+     * @return Properties object containing the branch and product
+     */
+    public Properties getBuildProperties()
+    {
+        Properties properties = new Properties();
+
+        try (InputStream input = new FileInputStream("build.properties"))
+        {
+            properties.load(input);
+        }
+        catch (FileNotFoundException e)
+        {
+            properties.setProperty("branch", "unspecified");
+            properties.setProperty("product", "unspecified");
+        }
+        catch (IOException e)
+        {
+            throw new IllegalStateException("Error whilst reading build.properties file");
+        }
+
+        return properties;
+    }
+
+    @Override
     public void syntaxError(String state, String event, List<String> legalEvents, String uri, Integer line)
     {
         // Noop
     }
 
+    @Override
     public void uri(String uri)
     {
         // Noop
     }
 
+    @Override
     public void feature(Feature feature)
     {
         this.feature = feature;
     }
 
+    @Override
     public void scenarioOutline(ScenarioOutline scenarioOutline)
     {
         // Noop
     }
 
+    @Override
     public void examples(Examples examples)
     {
         // Noop
     }
 
+    @Override
     public void startOfScenarioLifeCycle(Scenario scenario)
     {
         // Noop
     }
 
+    @Override
     public void background(Background background)
     {
         // Noop
     }
 
+    @Override
     public void scenario(Scenario scenario)
     {
         // Noop
     }
 
+    @Override
     public void step(Step step)
     {
         // When handling the first example value of a scenario outline the steps are always duplicated, but not with any subsequent example values.
@@ -93,6 +138,7 @@ public class ElasticFormatter implements Reporter, Formatter
         steps.add(step);
     }
 
+    @Override
     public void endOfScenarioLifeCycle(Scenario scenario)
     {
         // Check that all lists are the same size, if they are not something has gone horribly wrong
@@ -106,7 +152,8 @@ public class ElasticFormatter implements Reporter, Formatter
         // the output file.
         for (int i = 0; i < steps.size(); i++)
         {
-            elasticStepResult = new ElasticStepResult(steps.get(i), results.get(i), matches.get(i), feature, scenario);
+            elasticStepResult = new ElasticStepResult(steps.get(i), results.get(i), matches.get(i), feature, scenario,
+                    branch, product);
             out.append(getGson().toJson(new ElasticOperation("results", "result"))).append("\n");
             out.append(getGson().toJson(elasticStepResult)).append("\n");
         }
@@ -119,21 +166,25 @@ public class ElasticFormatter implements Reporter, Formatter
         afterHook = STARTING_AFTER_HOOK_VALUE;
     }
 
+    @Override
     public void done()
     {
         // Noop
     }
 
+    @Override
     public void close()
     {
         out.close();
     }
 
+    @Override
     public void eof()
     {
         // Noop
     }
 
+    @Override
     public void before(Match match, Result result)
     {
         steps.add(new Step(null, "Before", match.getLocation(), beforeHook++, null, null));
@@ -141,11 +192,13 @@ public class ElasticFormatter implements Reporter, Formatter
         matches.add(match);
     }
 
+    @Override
     public void result(Result result)
     {
         results.add(result);
     }
 
+    @Override
     public void after(Match match, Result result)
     {
         steps.add(new Step(null, "After", match.getLocation(), afterHook++, null, null));
@@ -153,16 +206,19 @@ public class ElasticFormatter implements Reporter, Formatter
         matches.add(match);
     }
 
+    @Override
     public void match(Match match)
     {
         matches.add(match);
     }
 
+    @Override
     public void embedding(String mimeType, byte[] data)
     {
         // Noop
     }
 
+    @Override
     public void write(String text)
     {
         // Noop

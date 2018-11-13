@@ -23,8 +23,11 @@ public class ElasticStepResult
     private final String classname;
     private final double duration;
     private final String created;
+    private final String branch;
+    private final String product;
 
-    public ElasticStepResult(Step step, Result result, Match match, Feature feature, Scenario scenario)
+    public ElasticStepResult(Step step, Result result, Match match, Feature feature, Scenario scenario, String branch,
+            String product)
     {
         this.keyword = step.getKeyword();
         this.step = step.getName();
@@ -40,6 +43,8 @@ public class ElasticStepResult
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
-        created = dateFormat.format(date);
+        this.created = dateFormat.format(date);
+        this.branch = branch;
+        this.product = product;
     }
 }
