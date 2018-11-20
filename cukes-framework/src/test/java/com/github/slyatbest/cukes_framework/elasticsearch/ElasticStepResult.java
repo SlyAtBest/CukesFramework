@@ -1,5 +1,6 @@
 package com.github.slyatbest.cukes_framework.elasticsearch;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -15,6 +16,9 @@ import cucumber.api.TestStep;
 import cucumber.runner.PickleTestStep;
 import cucumber.runner.UnskipableStep;
 
+/**
+ *  POJO to represent a single step result that can easily be converted to JSON and pushed out to Elasticsearch
+ */
 @SuppressWarnings("unused")
 public class ElasticStepResult
 {
@@ -26,15 +30,38 @@ public class ElasticStepResult
     private final String created;
     private final String branch;
     private final String product;
+
     private List<String> tags;
     private String step;
 
+    /**
+     * Constructor
+     * 
+     * @param testStep {@link TestStep}
+     * @param result {@link Result}
+     * @param testCase {@link TestCase}
+     * @param properties {@link Properties}
+     */
     public ElasticStepResult(TestStep testStep, Result result, TestCase testCase, Properties properties)
     {
         this.result = result.getStatus().toString().toLowerCase(Locale.getDefault());
         this.reason = result.getErrorMessage();
 
-        this.feature = Paths.get(testCase.getUri()).getFileName().toString();
+        Path featureUri = Paths.get(testCase.getUri());
+        if (featureUri == null)
+        {
+            throw new IllegalStateException("The feature URI does not match the expected format and returned null");
+        }
+
+        Path filename = featureUri.getFileName();
+
+        if (filename == null)
+        {
+            throw new IllegalStateException(
+                    String.format("Unable to extract filename from feature URI: %s", featureUri));
+        }
+
+        this.feature = filename.toString();
         this.scenario = testCase.getName();
 
         double durationSeconds = (double) result.getDuration() / 1000000000L;

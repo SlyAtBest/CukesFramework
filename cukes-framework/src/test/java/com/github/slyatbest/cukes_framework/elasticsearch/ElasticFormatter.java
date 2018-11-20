@@ -74,8 +74,22 @@ public class ElasticFormatter implements Formatter
     private Properties loadBuildProperties()
     {
         Properties properties = new Properties();
-        Path pathToProperties = Paths.get(Paths.get(System.getProperty("user.dir")).getParent().toString(),
-                "/build.properties");
+
+        String userDirectory = System.getProperty("user.dir");
+
+        if (userDirectory == null)
+        {
+            throw new IllegalStateException("Failed to find user directory");
+        }
+
+        Path parent = Paths.get(userDirectory).getParent();
+
+        if (parent == null)
+        {
+            throw new IllegalStateException("Failed to get parent of user directory");
+        }
+
+        Path pathToProperties = Paths.get(parent.toString(), "/cucumber/build.properties");
         try (InputStream input = new FileInputStream(pathToProperties.toString()))
         {
             properties.load(input);
@@ -136,5 +150,4 @@ public class ElasticFormatter implements Formatter
         publisher.registerHandlerFor(TestRunFinished.class, runFinishedHandler);
 
     }
-
 }
