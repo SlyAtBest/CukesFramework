@@ -8,17 +8,15 @@ import java.util.Map;
  */
 public class ElasticOperation
 {
-    private final Map<String, String> elasticData;
+    private final Map<String, String> index;
 
     /**
      * Constructor
      * @param index String containing the index
-     * @param type String containing the type
      */
-    public ElasticOperation(String index, String type)
+    public ElasticOperation(String index)
     {
-        this.elasticData = new HashMap<String, String>();
-        this.elasticData.put("_index", index);
-        this.elasticData.put("_type", type);
+        this.index = new HashMap<String, String>();
+        this.index.put("_index", index);
     }
 }
