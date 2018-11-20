@@ -89,7 +89,7 @@ public class ElasticFormatter implements Formatter
             throw new IllegalStateException("Failed to get parent of user directory");
         }
 
-        Path pathToProperties = Paths.get(parent.toString(), "/cucumber/build.properties");
+        Path pathToProperties = Paths.get(parent.toString(), "/build.properties");
         try (InputStream input = new FileInputStream(pathToProperties.toString()))
         {
             properties.load(input);
