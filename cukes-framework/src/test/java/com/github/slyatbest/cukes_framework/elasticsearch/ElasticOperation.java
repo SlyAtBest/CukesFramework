@@ -13,10 +13,12 @@ public class ElasticOperation
     /**
      * Constructor
      * @param index String containing the index
+     * @param type String containing the type
      */
-    public ElasticOperation(String index)
+    public ElasticOperation(String index, String type)
     {
         this.index = new HashMap<String, String>();
         this.index.put("_index", index);
+        this.index.put("_type", type);
     }
 }
