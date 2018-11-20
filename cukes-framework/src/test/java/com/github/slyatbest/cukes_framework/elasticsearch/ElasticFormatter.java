@@ -130,7 +130,7 @@ public class ElasticFormatter implements Formatter
     {
         elasticStepResult = new ElasticStepResult(testStep, result, testCase, properties);
         Gson gson = new GsonBuilder().create();
-        out.append(gson.toJson(new ElasticOperation("emailandwebresults"))).append("\n");
+        out.append(gson.toJson(new ElasticOperation("email-web-results"))).append("\n");
         out.append(gson.toJson(elasticStepResult)).append("\n");
     }
 
