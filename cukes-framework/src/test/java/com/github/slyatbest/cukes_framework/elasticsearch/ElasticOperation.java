@@ -1,14 +1,13 @@
 package com.github.slyatbest.cukes_framework.elasticsearch;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Simple POJO to store elastic operation data
  */
 public class ElasticOperation
 {
-    private final Map<String, String> index;
+    private final HashMap<String, String> index;
 
     /**
      * Constructor

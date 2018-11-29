@@ -1,13 +1,7 @@
 package com.github.slyatbest.cukes_framework.elasticsearch;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Properties;
-
 import cucumber.api.Result;
+import cucumber.api.Result.Type;
 import cucumber.api.TestCase;
 import cucumber.api.TestStep;
 import cucumber.api.event.EventHandler;
@@ -22,9 +16,6 @@ import gherkin.deps.com.google.gson.GsonBuilder;
 
 public class ElasticFormatter implements Formatter
 {
-    private final NiceAppendable out;
-    private final Properties properties;
-
     private final EventHandler<TestCaseStarted> caseStartedHandler = new EventHandler<TestCaseStarted>()
     {
         @Override
@@ -52,6 +43,8 @@ public class ElasticFormatter implements Formatter
         }
     };
 
+    private final NiceAppendable out;
+
     private TestCase testCase;
     private ElasticStepResult elasticStepResult;
 
@@ -63,44 +56,6 @@ public class ElasticFormatter implements Formatter
     public ElasticFormatter(Appendable out)
     {
         this.out = new NiceAppendable(out);
-        this.properties = loadBuildProperties();
-    }
-
-    /**
-     * Method to retrieve the build.properties data.  If no file is found or if an error occurs whilst loading the file
-     * then throw an {@link IllegalStateException}
-     * @return Properties object containing the branch and product
-     */
-    private Properties loadBuildProperties()
-    {
-        Properties properties = new Properties();
-
-        String userDirectory = System.getProperty("user.dir");
-
-        if (userDirectory == null)
-        {
-            throw new IllegalStateException("Failed to find user directory");
-        }
-
-        Path parent = Paths.get(userDirectory).getParent();
-
-        if (parent == null)
-        {
-            throw new IllegalStateException("Failed to get parent of user directory");
-        }
-
-        Path pathToProperties = Paths.get(parent.toString(), "/build.properties");
-        try (InputStream input = new FileInputStream(pathToProperties.toString()))
-        {
-            properties.load(input);
-        }
-        catch (IOException e)
-        {
-            throw new IllegalStateException(String.format(
-                    "Error whilst loading/reading \"build.properties\" file using path \"%s\"", pathToProperties));
-        }
-
-        return properties;
     }
 
     /**
@@ -113,12 +68,16 @@ public class ElasticFormatter implements Formatter
     }
 
     /**
-     * Method called after each step has been executed, which appends results data to the json output in ElasticSearch's bulk format
+     * Method called after each step has been executed, which appends results data to the json output in ElasticSearch's bulk format.
+     * steps marked as 'SKIPPED' are explicitly ignored
      * @param event {@link TestStepFinished}
      */
     private void handleTestStepFinished(TestStepFinished event)
     {
-        appendResultToJsonOutput(event.testStep, event.result);
+        if (!event.result.getStatus().equals(Type.SKIPPED))
+        {
+            appendResultToJsonOutput(event.testStep, event.result);
+        }
     }
 
     /**
@@ -128,7 +87,7 @@ public class ElasticFormatter implements Formatter
      */
     private void appendResultToJsonOutput(TestStep testStep, Result result)
     {
-        elasticStepResult = new ElasticStepResult(testStep, result, testCase, properties);
+        elasticStepResult = new ElasticStepResult(testStep, result, testCase);
         Gson gson = new GsonBuilder().create();
         out.append(gson.toJson(new ElasticOperation("email-web-results", "result"))).append("\n");
         out.append(gson.toJson(elasticStepResult)).append("\n");
@@ -150,4 +109,5 @@ public class ElasticFormatter implements Formatter
         publisher.registerHandlerFor(TestRunFinished.class, runFinishedHandler);
 
     }
+
 }
