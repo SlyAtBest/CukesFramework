@@ -73,7 +73,6 @@ public class ElasticFormatter implements Formatter
      */
     private Properties loadBuildProperties()
     {
-        System.out.println("***************" + System.getenv("BRANCH_NAME") + "*********************");
         Properties properties = new Properties();
 
         String userDirectory = System.getProperty("user.dir");

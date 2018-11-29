@@ -71,8 +71,8 @@ public class ElasticStepResult
         Date date = new Date();
         this.created = dateFormat.format(date);
 
-        this.branch = properties.getProperty("branch");
-        this.product = properties.getProperty("product");
+        this.branch = System.getenv("BRANCH_NAME");
+        this.product = System.getenv("PRODUCT");
 
         if (!testCase.getTags().isEmpty())
         {
