@@ -11,4 +11,7 @@ Feature: Scenario Outline Test
       | Value  |
       | first  |
       | second |
-      | third  |
+
+    Examples: A second set of values
+      | Value |
+      | third |
