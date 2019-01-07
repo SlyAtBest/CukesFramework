@@ -20,21 +20,24 @@ public class Hooks
     @After()
     public void embedImage(Scenario scenario)
     {
-        URL image = Hooks.class.getResource("/com/github/slyatbest/cukes_framework/images/image.png");
+        if (scenario.isFailed())
         {
-            try
+            URL image = Hooks.class.getResource("/com/github/slyatbest/cukes_framework/images/image.png");
             {
-                if (image == null)
+                try
                 {
-                    throw new IOException("Failed to load image");
-                }
+                    if (image == null)
+                    {
+                        throw new IOException("Failed to load image");
+                    }
 
-                byte[] data = Resources.toByteArray(image);
-                scenario.embed(data, "image/png");
-            }
-            catch (IOException e)
-            {
-                System.err.println(e.getMessage());
+                    byte[] data = Resources.toByteArray(image);
+                    scenario.embed(data, "image/png");
+                }
+                catch (IOException e)
+                {
+                    System.err.println(e.getMessage());
+                }
             }
         }
     }
