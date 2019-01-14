@@ -11,7 +11,7 @@ import cucumber.api.junit.Cucumber;
         plugin = {"pretty",
                 "com.github.slyatbest.cukes_framework.elasticsearch.ElasticFormatter:target/elastic-output.json",
                 "json:target/cucumber-report.json"},
-        snippets = SnippetType.CAMELCASE, strict = true)
+        snippets = SnippetType.CAMELCASE, strict = false)
 public class CukesRunTest
 {
 
