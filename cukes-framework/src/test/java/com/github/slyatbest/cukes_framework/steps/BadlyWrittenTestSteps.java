@@ -32,4 +32,10 @@ public class BadlyWrittenTestSteps
 
     }
 
+    @Then("^this step will be skipped$")
+    public void thisStepWillBeSkipped() throws Throwable
+    {
+        // Do nothing
+    }
+
 }
