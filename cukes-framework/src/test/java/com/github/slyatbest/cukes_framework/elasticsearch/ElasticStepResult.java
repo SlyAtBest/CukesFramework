@@ -113,6 +113,7 @@ public class ElasticStepResult
      */
     private double returnDurationInSeconds(Result result)
     {
+        // Handle case where duration is null e.g. an undefined step
         Long duration = Optional.ofNullable(result.getDuration()).orElse(0L);
 
         double durationSeconds = (double) duration / 1000000000L;
