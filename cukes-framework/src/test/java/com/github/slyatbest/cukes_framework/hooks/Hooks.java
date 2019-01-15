@@ -5,6 +5,7 @@ import java.net.URL;
 
 import com.google.common.io.Resources;
 
+import cucumber.api.PendingException;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -15,6 +16,12 @@ public class Hooks
     public void printStartingTest()
     {
         System.out.println("***Starting Test***");
+    }
+
+    @Before("@run_hook")
+    public void runTaggedHook()
+    {
+        throw new PendingException();
     }
 
     @After()
