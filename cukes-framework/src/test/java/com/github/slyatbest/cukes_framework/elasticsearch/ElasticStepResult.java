@@ -113,11 +113,10 @@ public class ElasticStepResult
      */
     private double returnDurationInSeconds(Result result)
     {
-        // Undefined steps do not have a result, handle this
-        return Optional.ofNullable(result).map((r) -> {
-            double durationSeconds = (double) r.getDuration() / 1000000000L;
-            return Math.round(durationSeconds * 100.0) / 100.0;
-        }).orElse(0.0d);
+        Long duration = Optional.ofNullable(result.getDuration()).orElse(0L);
+
+        double durationSeconds = (double) duration / 1000000000L;
+        return Math.round(durationSeconds * 100.0) / 100.0;
     }
 
     /**
