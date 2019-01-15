@@ -5,7 +5,6 @@ import java.net.URL;
 
 import com.google.common.io.Resources;
 
-import cucumber.api.PendingException;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -19,9 +18,9 @@ public class Hooks
     }
 
     @Before("@run_hook")
-    public void runTaggedHook()
+    public void runTaggedHook() throws Exception
     {
-        throw new PendingException();
+        throw new Exception("An error has occurred during setup");
     }
 
     @After()
