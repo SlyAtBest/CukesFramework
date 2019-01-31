@@ -4,7 +4,7 @@ import cucumber.api.java.en.Given;
 
 public class PocTestScenarioIntergrationWithPulseSteps
 {
-    @Given("^this step passes$")
+    @Given("^this first step passes$")
     public void thisStepPasses() throws Exception
     {
         // Do nothing
