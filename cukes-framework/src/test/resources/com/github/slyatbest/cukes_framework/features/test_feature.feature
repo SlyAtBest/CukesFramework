@@ -9,7 +9,7 @@ Feature: Test Feature
   
   Given I have a product
   And I complete another background step
-  And I complete on further background step
+  And I complete one further background step
 
   Scenario: I have a product and I want it to do something useful
     Given I have a product

@@ -33,7 +33,7 @@ public class TestFeatureSteps
         Thread.sleep(1000);
     }
 
-    @Given("^I complete on further background step$")
+    @Given("^I complete one further background step$")
     public void iCompleteOnFurtherBackgroundStep() throws Exception
     {
         Thread.sleep(1000);
