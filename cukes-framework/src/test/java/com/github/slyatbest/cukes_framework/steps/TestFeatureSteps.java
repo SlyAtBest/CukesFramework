@@ -26,4 +26,16 @@ public class TestFeatureSteps
         Thread.sleep(1000);
         Assert.assertTrue("Something happened", true);
     }
+
+    @Given("^I complete another background step$")
+    public void iCompleteAnotherBackgroundStep() throws Exception
+    {
+        Thread.sleep(1000);
+    }
+
+    @Given("^I complete on further background step$")
+    public void iCompleteOnFurtherBackgroundStep() throws Exception
+    {
+        Thread.sleep(1000);
+    }
 }
